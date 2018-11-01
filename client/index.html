@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="google-signin-client_id" content="1098726616042-vknuh9sb65226gki3u9a6u75ibq90414.apps.googleusercontent.com">
+  <title>ÜberGit</title>
+  <!-- ! BOOTSTRAP -->
+  <link rel="stylesheet" href="./style/bootstrap.css">
+  <link rel="stylesheet" href="./style/custom-css.css">
+</head>
+<body>
+
+  <!-- ! HEADER -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#" id="brandName">ÜberGit</a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li>
+          <a id="createRepoToggle" href="#">Create Repository</a>
+        </li>
+      </ul>
+  
+      <ul class="navbar-nav .float-right align-items-center">
+        <div id="signInOut">
+          <div id='signOut' style="margin-right: 10px">
+          <a href="#" onclick="signOut();">Sign out</a>
+          </div>
+          <div class="g-signin2" data-onsuccess="onSignIn" id="signIn">
+          </div>
+        </div>
+        <div id="userName">
+        </div>
+        <div id="userImg">
+        </div>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+
+    <div id="beforeLogin">
+      <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+          <h1 class="display-4">It seems you're not yet signed in.</h1>
+          <p class="lead">Please sign in using Google Sign In button up there. Merci!</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row" id="all">
+      <!-- asking users to sign in -->
+      
+      <!-- ? FOR USERS POSITION -->
+
+      <!-- ! FORM FOR MAKING REPO -->
+      <div id="createRepoForm" class="col">
+          <div class="form-group">
+            <a class="navbar-nav mr-auto" id="showBack" href="#">← Go back</a>
+            <br>
+            <label for="name">Name</label>
+            <input name="name" type="name" class="form-control" id="inputName" aria-describedby="name" placeholder="Enter Repository Name" required>
+          </div>
+          <div class="form-group">
+            <label for="name">Description</label>
+            <input name="description" type="name" class="form-control" id="inputDescription" aria-describedby="name" placeholder="Enter Repository Description"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Home Page</label>
+            <input name="homepage" type="url" class="form-control" id="inputHomepage" placeholder="Insert Home Page URL">
+          </div>
+          <div class="form-check">
+            <input name="private" type="checkbox" class="form-check-input" id="inputPrivate">
+            <label class="form-check-label" for="exampleCheck1">Private</label>
+          </div>
+          <br>
+          <br>
+          <button type="submit" class="btn btn-primary" id="submitCreateRepo">🔥 Submit</button>
+      </div>
+
+      <!-- ! CONTENT -->
+      <div class="col overflowAble col-2 showAgain">
+        <h1>Users</h1>
+        <ul id="otherUsers">
+          <li>
+            <a id="senecamanu">
+              Seneca Manu
+            </a>
+          </li>
+          <li>
+            <a id="7h30x">
+              Theo
+            </a>
+          </li>
+          <li>
+            <a id="dmtrxw">
+              Dimitri
+            </a>
+          </li>
+          <li>
+            <a id="abdulmukmin">
+              Abdul Mu'min
+            </a>
+          </li>
+        </ul>
+      </div>
+      <!-- ? FOR EACH REPO -->
+      <div class="col overflowAble col-4 showAgain" >
+        <div type="form-control">
+          <input class="form-control col-form-label" type="text" name="search" id="search" placeholder="📖">
+          <hr>
+        </div>
+        <div id="repos">
+        </div>
+      </div>
+      <!-- ? FOR SHOWING WHEN REPO IS CLICKED -->
+      <div class="col overflowAble showAgain" id="eachRepo">
+      </div>
+    </div>
+  </div>
+
+  <!-- ! JQUERY ETC. -->
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous">
+  </script>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <script src="lib/auth.js"></script>
+
+  <script>
+    function signOut() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut().then(function () {
+        console.log('User signed out.');
+      });
+    }
+  </script>
+
+    <!-- ! CUSTOM SCRIPT -->
+  <script src="lib/jquery.js"></script>
+</body>
+</html>
