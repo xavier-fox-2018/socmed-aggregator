@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+     <!--Google-->
+     <meta name="google-signin-scope" content="profile email">
+     <meta name="google-signin-client_id" content="1032017412855-ql6tievj34f1p5mpa4thb45l9vqigvu9.apps.googleusercontent.com">
+     <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <title>Sign In</title>
+</head>
+<body>
+    <div class="g-signin2" data-onsuccess="onSignIn"  data-redirecturi="index.html"></div>
+
+<script>
+        function onSignIn(googleUser) {
+        let google_token = googleUser.getAuthResponse().id_token;
+        $.ajax({
+            method: "POST",
+            url: 'http://localhost:3000/hacktivgit/signin',
+            data: {google_token: google_token}
+        })
+        .done(function(response) {
+            localStorage.setItem('token', response.token)
+        })
+        .fail(function(error) {
+                $("#error").text(JSON.stringify(error.responseText))
+                $("#error").show()
+            })
+      };
+
+</script>    
+</body>
+</html>

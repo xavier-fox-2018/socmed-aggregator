@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="./main.css">
+    <title>HacktivGit</title>
+    <!--JQuery -->
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous">
+    </script>
+    <!--Google-->
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="1032017412855-ql6tievj34f1p5mpa4thb45l9vqigvu9.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+</head>
+
+<body>
+    <script src="header.js"></script>
+    <div id="content" class="hidden">
+        <div id="users">
+            <h4>Users</h4>
+            <ul id="user1" onmouseover="" style="cursor: pointer;">dhimashary</ul>
+            <ul id="user2" onmouseover="" style="cursor: pointer;">dovjay</ul>
+            <ul id="user3" onmouseover="" style="cursor: pointer;">Nsamudera</ul>
+            <br>
+            <h4>Add Repo</h4>
+            Name:
+            <br>
+            <input id="name" type="text">
+            <input id="submit" type="submit" value="submit">
+            <p id="addRepo" style="color:green; display: none">Repo has been Successfully created!</p>
+        </div>
+        <div id="search">
+            <p style="color:red; display: none" id="error"></p>
+            <input type="text" placeholder="Search.." name="search" id="searchbar">
+            <button id="startSearch" type="submit">Search</button>
+        </div>
+        <div id="description">
+            Description Here
+        </div>
+    </div>
+
+    <script>
+
+        //to check if there is "token" in local storage
+        $(document).ready(function() {
+            let token = localStorage.getItem('token')
+            if(token) {
+                let content = document.getElementsByClassName("hidden")
+                for(let i = 0; i< content.length; i++) {
+                    content[i].className = ""
+                }
+            }
+            console.log('Token:' +token)
+        })
+        //to display starred repo in the beginning
+        $(document).ready(function () {
+            $.ajax({
+                method: "GET",
+                url: 'http://localhost:3000/hacktivgit/repo-list/star'
+            })
+                .done(function (response) {
+                    $.each(response.data, function (data, content) {
+                        $("#search").append(`<div class="data">${content.owner}/${content.name} <br><br> ${content.stars} stars <a href ="${content.url}" target="_blank"> View on Github <a/></div>`)
+                    })
+                })
+                .fail(function (error) {
+                    $("#error").text(JSON.stringify(error.responseText))
+                    $("#error").show()
+                })
+        })
+        $("#user1, #user2, #user3").click(function () {
+            let id = $(this).attr('id')
+            let user = document.getElementById(id).innerText
+            $.ajax({
+                method: "GET",
+                url: `http://localhost:3000/hacktivgit/repo-list/${user}`
+            })
+                .done(function (response) {
+                    $("#search").text("")
+                    $.each(response.data, function (data, content) {
+                        $("#search").append(`<div class="data">${content.owner}/${content.name} <br><br> ${content.stars} stars <a href ="${content.url}" target="_blank"> View on Github <a/></div>`)
+                    })
+                })
+                .fail(function (error) {
+                    $("#error").text(JSON.stringify(error.responseText))
+                    $("#error").show()
+                })
+        })
+        $("#submit").click(function() {
+            let name = $("#name").val()
+            $.ajax({
+                method: "POST",
+                url: `http://localhost:3000/hacktivgit/create-repo`,
+                data: {
+                    name: name
+                }
+            })
+            .done(function(response) {
+                $("#addRepo").show()
+                setTimeout(function(){
+                    $("#addRepo").hide()
+                }, 5000)
+            })
+            .fail(function(error) {
+                $("#error").text(JSON.stringify(error.responseText))
+                $("#error").show()
+            })
+        })
+        $("#startSearch").click(function() {
+            let searchItem = $("#searchbar").val()
+            $.ajax({
+                method: "GET",
+                url: `http://localhost:3000/hacktivgit/repo-list/star/name/${searchItem}`
+            })
+            .done(function(response) {
+                console.log(response)
+                $("#search").text("")
+                $.each(response.data, function (data, content) {
+                        $("#search").append(`<div class="data">${content.owner}/${content.name} <br><br> ${content.stars} stars <a href ="${content.url}" target="_blank"> View on Github <a/></div>`)
+                    })
+            })
+            .fail(function(error) {
+                $("#error").text(JSON.stringify(error.responseText))
+                $("#error").show()
+            })
+        })
+        function onSignIn(googleUser) {
+        let google_token = googleUser.getAuthResponse().id_token;
+        $.ajax({
+            method: "POST",
+            url: 'http://localhost:3000/hacktivgit/signin',
+            data: {google_token: google_token}
+        })
+        .done(function(response) {
+            localStorage.setItem('token', response.token)
+        })
+        .fail(function(error) {
+                $("#error").text(JSON.stringify(error.responseText))
+                $("#error").show()
+            })
+      };
+
+    function signOut() {
+        let auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+            localStorage.removeItem('token');
+            console.log('User signed out.');
+        });
+    }
+    </script>
+</body>
+
+<footer>
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <button id="signout"><a href="" onclick="signOut();">Sign out</a>
+    </button>
+</footer>
+
+</html>
