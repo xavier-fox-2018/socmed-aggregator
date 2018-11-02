@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="google-signin-client_id" content="1441690207-i0o73en07lrbr784p734gcblh3orq135.apps.googleusercontent.com">
+    <title>Document</title>
+    <!-- Latest compiled and minified CSS -->
+    <style>
+        .break {
+            height: 6px;
+            background: url(http://ibrahimjabbari.com/english/images/hr-11.png) repeat-x 0 0;
+            border: 0;
+        }
+
+        .users {
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="eror" style="color: red; display: none">EROR</h1>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        <a href="#" onclick="signOut();">Sign out</a>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">
+                <h1>Users</h1>
+                <ul>
+                    <li class="users" id="Dimitri">Dimitri</li>
+                    <li class="users" id="Windi">Windiana</li>
+                    <li class="users" id="Semi">Semi</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <div class="Dimitri">
+                   
+                    <input style="padding-top:30px " type="search" name="" id="" placeholder="search">
+
+                </div>
+                <div class="Windi">
+                    <br>
+                    <input type="search" name="" id="" placeholder="search">
+                </div>
+                <div class="Semi">
+                    <br>
+                    <input type="search" name="" id="" placeholder="search">
+                </div>
+                <div class="searchResult">
+
+
+                </div>
+                <div class="repos">
+                    <br>
+                    <input type="search" name="" id="searchStar" placeholder="search">
+                    <button id="search">search</button>
+
+                    <input type="search" name="" id="addRepo" placeholder="add repo name" style="margin-top: 20px">
+                    <button id="add">add</button>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+    <script>
+        function onSignIn(googleUser) {
+            var id_token = googleUser.getAuthResponse().id_token;
+            $.post("http://localhost:3000/google-token/postToken", { token: id_token }, function (data, status) {
+                if (status !== 'success') {
+                    $('eror').show()
+                } else {
+                    localStorage.setItem('token', data)
+                }
+            })
+
+        }
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                localStorage.removeItem('token')
+                console.log('User signed out.');
+            });
+        }
+
+
+        $.ajax({
+            method: "GET",
+            url: "http://localhost:3000/repos/starred"
+        })
+            .done(function (data) {
+                console.log(data)
+                $.each(data, function (index, value) {
+                    $('.Windi').hide()
+                    $('.Semi').hide()
+                    $('.Dimitri').hide()
+                    $('.searchResult').hide()
+                    $('.repos').append(
+                        `<h1>${value.name}</h1> <br>
+                            <a href=""> ${value.language} !</a>
+                            <br>
+                            <p>${value.stargaze} star</p> <a href="${value.url}"> view on github </a>
+                            <hr class = "break">
+                            `
+                    ).show()
+                })
+            });
+
+
+        $('#Dimitri').click(function () {
+            $.ajax({
+                method: "GET",
+                url: "http://localhost:3000/repos/views/dmtrxw"
+            })
+                .done(function (data) {
+                    console.log(data)
+                    $.each(data, function (index, value) {
+                        $('.Windi').hide()
+                        $('.Semi').hide()
+                        $('.repos').hide()
+                        $('.searchResult').hide()
+                        $('.Dimitri').append(
+                            `<h1>${value.name}</h1> <br>
+                            <h4> ${value.description} </h4> <br>
+                            <a href=""> ${value.language} !</a>
+                            <br>
+                            <p>${value.stargaze} star</p> <a href="${value.url}"> view on github </a>
+                            <hr class = "break">
+                            `
+                        ).show()
+                    })
+                });
+        })
+
+        $('#Semi').click(function () {
+            $.ajax({
+                method: "GET",
+                url: "http://localhost:3000/repos/views/semmiverian"
+            })
+                .done(function (data) {
+                    console.log(data)
+                    $.each(data, function (index, value) {
+                        $('.Windi').hide()
+                        $('.Dimitri').hide()
+                        $('.repos').hide()
+                        $('.Semi').append(
+                            `<h1>${value.name}</h1> <br>
+                            <h4> ${value.description} </h4> <br>
+                            <a href=""> ${value.language} !</a>
+                            <br>
+                            <p>${value.stargaze} star</p> <a href="${value.url}"> view on github </a>
+                            <hr class = "break">
+                            `
+                        ).show()
+                    })
+                });
+        })
+
+        $('#Windi').click(function () {
+            $.ajax({
+                method: "GET",
+                url: "http://localhost:3000/repos/views/Windiana"
+            })
+                .done(function (data) {
+                    console.log(data)
+                    $.each(data, function (index, value) {
+                        $('.Semi').hide()
+                        $('.Dimitri').hide()
+                        $('.searchResult').hide()
+                        $('.repos').hide()
+                        $('.Windi').append(
+                            `<h1>${value.name}</h1> <br>
+                            <h4> ${value.description} </h4> <br>
+                            <a href=""> ${value.language} !</a>
+                            <br>
+                            <p>${value.stargaze} star</p> <a href="${value.url}"> view on github </a>
+                            <hr class = "break">
+                            `
+                        ).show()
+                    })
+                });
+        })
+
+        $('#add').click(function () {
+            $.post('http://localhost:3000/repos/add', { name: $('#addRepo').val() }, function (err, data) {
+                alert('success add repo')
+            })
+        })
+
+        $('#search').click(function () {
+            let joinedUrl = "http://localhost:3000/repos/search/" + $('#searchStar').val()
+            $.ajax({
+                method: "GET",
+                url: joinedUrl
+            })
+                .done(function (data) {
+                    console.log(data)
+                    $('.repos').hide()
+                    $('.searchResult').html(
+                        `<h1>${data[0].name}</h1> <br>
+                            <h4> ${data[0].description} </h4> <br>
+                            <a href=""> ${data[0].language} !</a>
+                            <br>
+                            <p>${data[0].stargaze} star</p> <a href="${data[0].url}"> view on github </a>
+                            <hr class = "break">
+                            `
+                    ).show()
+                })
+        })
+    </script>
+</body>
+
+</html>
